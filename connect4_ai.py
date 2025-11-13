@@ -17,22 +17,22 @@ class Connect4AI(Connect4):
             for x in range(self._w):
                 for v in (1, -1):
                     if self._get(x, y) == 0 and self._around(x, y, v) >= 3:
-                        count += v * (1 + y)
-        return count
+                        count += v * 10 * (1 + y)
+        return count + random() / 2
 
     def _negamax(self, depth, alpha=-inf, beta=+inf):
-        if depth == 0 or self.finished():
-            return self._turn * self._value(), self._move[0]
-        value, move = -inf, inf
+        if depth <= 0 or self.finished():
+            return self._turn * self._value(), self._move
+        value, move = -inf, None
         children = []
         for x in range(self._w):
             if self._get(x, 0) == 0:
                 child = deepcopy(self)
                 child.play(x, 0)
-                children.append((self._turn * child._value(), random(), child))
-        for _, _, child in reversed(sorted(children)):
+                children.append((self._turn * child._value(), child))
+        for _, child in reversed(sorted(children)):
             v, _ = child._negamax(depth - 1, -beta, -alpha)
-            value, move = max((value, move), (-v, child._move[0]))
+            value, move = max((value, move), (-v, child._move))
             alpha = max(alpha, value)
             if alpha >= beta:
                 break # α-β cutoff
@@ -40,7 +40,7 @@ class Connect4AI(Connect4):
 
     def play(self, x: int, y: int, command=""):
         if command == "flag":
-            _, x = self._negamax(6)
+            _, (x, y) = self._negamax(6)
         super().play(x, y)
 
 if __name__ == "__main__":
