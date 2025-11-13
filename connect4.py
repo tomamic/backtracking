@@ -62,7 +62,7 @@ class Connect4(BoardGame):
 
     def read(self, x: int, y: int) -> str:
         p = symbol[self._get(x, y)]
-        return p + ("\u0332" if self._move == (x, y) else "")
+        return p + ("!" if self._move == (x, y) else "")
 
     def play(self, x: int, y: int, command=""):
         y = self._walk(x, 0, 0, 1, 0) - 1
